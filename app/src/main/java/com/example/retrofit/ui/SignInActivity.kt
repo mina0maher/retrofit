@@ -9,7 +9,11 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.retrofit.R
-
+import com.example.retrofit.apis.RetrofitFactory
+import com.example.retrofit.models.SignInResponseModel
+import com.example.retrofit.models.UserModel
+import retrofit2.Call
+import retrofit2.Response
 class SignInActivity : AppCompatActivity() {
     private lateinit var buttonSignIn :Button
     private lateinit var progressBar: ProgressBar
@@ -20,6 +24,33 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
+        setListeners()
+    }
+    private fun setListeners(){
+        buttonSignIn.setOnClickListener {
+            if (isValidSignInDetails()){
+            loading(true)
+            signIn()
+            loading(false)
+        }
+        }
+    }
+    private fun signIn(){
+        val retrofit = RetrofitFactory().apiInterface()
+        val call = retrofit.logIn(UserModel(inputEmail.text.toString(),inputPassword.text.toString()))
+        call.enqueue(object :retrofit2.Callback<SignInResponseModel>{
+            override fun onResponse(
+                call: Call<SignInResponseModel>,
+                response: Response<SignInResponseModel>
+            ) {
+                showToast(response.code().toString())
+            }
+
+            override fun onFailure(call: Call<SignInResponseModel>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
     private fun init(){
         buttonSignIn = findViewById(R.id.buttonSignIn)
