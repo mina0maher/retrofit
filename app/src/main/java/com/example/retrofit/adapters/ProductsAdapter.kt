@@ -32,9 +32,9 @@ class ProductsAdapter(private val list: ArrayList<Data>,private var context: Con
     }
 
     class NormalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private var productName : TextView = itemView.findViewById(R.id.my_name)
-        private var productPrice : TextView = itemView.findViewById(R.id.my_price)
-        private var productImage : CircleImageView = itemView.findViewById(R.id.my_image)
+        private var productName : TextView = itemView.findViewById(R.id.item_name)
+        private var productPrice : TextView = itemView.findViewById(R.id.item_price)
+        private var productImage : CircleImageView = itemView.findViewById(R.id.item_image)
         fun setData(model: Data,context: Context) {
             productName.text = model.name
             val price = "${model.price} $"

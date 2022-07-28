@@ -28,7 +28,7 @@ class SignInActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_sign_in)
         init()
         loading(false)
         setListeners()
@@ -72,11 +72,16 @@ class SignInActivity : AppCompatActivity() {
                     response: Response<SignInResponseModel>
                 ) {
 
-                    if(response.code()==200){
-                        startActivity(Intent(this@SignInActivity,ProductsActivity::class.java))
+                    if (response.code() == 200) {
+                        startActivity(Intent(this@SignInActivity, ProductsActivity::class.java))
+                    } else if (response.code() == 422) {
+                        showToast("email & password not correct")
+                    }else if(response.code()==401){
+                        showToast("password not correct")
                     }else{
                         showToast("error ${response.code()}")
                     }
+
                 }
 
                 override fun onFailure(call: Call<SignInResponseModel>, t: Throwable) {
@@ -87,6 +92,7 @@ class SignInActivity : AppCompatActivity() {
         }else{
             showToast("check your internet connection")
         }
+        loading(false)
     }
 
     private fun init(){

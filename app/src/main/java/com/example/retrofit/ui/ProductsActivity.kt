@@ -18,13 +18,14 @@ import com.example.retrofit.models.ProductsModel
 import retrofit2.Call
 import retrofit2.Response
 
-lateinit var productsRecycler : RecyclerView
-lateinit var layoutManager: GridLayoutManager
-lateinit var productsAdapter: ProductsAdapter
-lateinit var productsLayout : ConstraintLayout
-lateinit var progressBar: ProgressBar
-lateinit var data : ProductsModel
+
 class ProductsActivity : AppCompatActivity() {
+    private lateinit var productsRecycler : RecyclerView
+    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var productsAdapter: ProductsAdapter
+    private lateinit var productsLayout : ConstraintLayout
+    private lateinit var progressBar: ProgressBar
+    private lateinit var data : ProductsModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
@@ -52,7 +53,7 @@ class ProductsActivity : AppCompatActivity() {
             })
         }else{
             showToast("check internet connection")
-                Thread.sleep(1000)
+                Thread.sleep(10000)
                 getData()
             }
     }

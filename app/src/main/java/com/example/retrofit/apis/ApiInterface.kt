@@ -1,5 +1,6 @@
 package com.example.retrofit.apis
 
+import com.example.retrofit.models.Data
 import com.example.retrofit.models.ProductsModel
 import com.example.retrofit.models.SignInResponseModel
 import com.example.retrofit.models.UserModel
@@ -14,4 +15,7 @@ interface ApiInterface {
 
     @GET("products")
     fun getData(): Call<ProductsModel>
+
+    @GET("products/id")
+    fun getProduct():Call<Data>
 }
