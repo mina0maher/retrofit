@@ -1,6 +1,7 @@
 package com.example.retrofit.ui
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         init()
+        loading(false)
         setListeners()
     }
 
@@ -39,7 +41,6 @@ class SignInActivity : AppCompatActivity() {
                 try {
                     loading(true)
                     signIn()
-                    loading(false)
                 }catch (e:Exception){
                     showToast("try again")
                 }
@@ -49,16 +50,17 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun isOnline(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        val n = cm.activeNetwork
-        if (n != null) {
-            val nc = cm.getNetworkCapabilities(n)
-            //It will check for both wifi and cellular network
-            return nc!!.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            val n = cm.activeNetwork
+            if (n != null) {
+                val nc = cm.getNetworkCapabilities(n)
+                //It will check for both wifi and cellular network
+                return nc!!.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            }
+            return false
         }
-        return false
-    }
 
     private fun signIn(){
         if(isOnline(applicationContext)){
@@ -69,7 +71,12 @@ class SignInActivity : AppCompatActivity() {
                     call: Call<SignInResponseModel>,
                     response: Response<SignInResponseModel>
                 ) {
-                    showToast(response.code().toString())
+
+                    if(response.code()==200){
+                        startActivity(Intent(this@SignInActivity,ProductsActivity::class.java))
+                    }else{
+                        showToast("error ${response.code()}")
+                    }
                 }
 
                 override fun onFailure(call: Call<SignInResponseModel>, t: Throwable) {

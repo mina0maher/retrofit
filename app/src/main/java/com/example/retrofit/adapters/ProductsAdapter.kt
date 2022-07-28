@@ -37,7 +37,8 @@ class ProductsAdapter(private val list: ArrayList<Data>,private var context: Con
         private var productImage : CircleImageView = itemView.findViewById(R.id.my_image)
         fun setData(model: Data,context: Context) {
             productName.text = model.name
-            productPrice.text=model.price.toString()
+            val price = "${model.price} $"
+            productPrice.text = price
             Glide.with(View(context)).load(model.image).into(productImage)
         }
     }
