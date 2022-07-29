@@ -1,25 +1,31 @@
 package com.example.retrofit.ui
 
 import android.content.Context
+import android.content.Intent
+import android.media.Image
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofit.R
 import com.example.retrofit.adapters.ProductsAdapter
 import com.example.retrofit.apis.RetrofitFactory
+import com.example.retrofit.interfaces.ProductsListener
 import com.example.retrofit.models.ProductsModel
 import retrofit2.Call
 import retrofit2.Response
 
 
-class ProductsActivity : AppCompatActivity() {
+class ProductsActivity : AppCompatActivity() ,ProductsListener {
     private lateinit var productsRecycler : RecyclerView
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var productsAdapter: ProductsAdapter
@@ -87,10 +93,27 @@ class ProductsActivity : AppCompatActivity() {
     fun installRecycler(){
         layoutManager = GridLayoutManager(applicationContext,2)
         productsRecycler.layoutManager = layoutManager
-        productsAdapter = ProductsAdapter(data.data,applicationContext)
+        productsAdapter = ProductsAdapter(data.data,applicationContext,this)
         productsRecycler.adapter = productsAdapter
     }
     private fun showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
     }
+
+    override fun onProductClicked(position: Int,productImage:ImageView) {
+        if(isOnline(applicationContext)){
+            val intent = Intent(this@ProductsActivity, ViewProductActivity::class.java)
+            intent.putExtra("POSITION",position)
+            val options :ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this@ProductsActivity,
+                productImage,
+                ViewCompat.getTransitionName(productImage)!!
+            )
+            startActivity(intent,options.toBundle())
+            }else{
+                showToast("check internet connection")
+            }
+    }
+
+
 }

@@ -49,6 +49,11 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loading(false)
+    }
+
     private fun isOnline(context: Context): Boolean {
 
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -76,23 +81,28 @@ class SignInActivity : AppCompatActivity() {
                         startActivity(Intent(this@SignInActivity, ProductsActivity::class.java))
                     } else if (response.code() == 422) {
                         showToast("email & password not correct")
+                        loading(false)
                     }else if(response.code()==401){
                         showToast("password not correct")
+                        loading(false)
                     }else{
                         showToast("error ${response.code()}")
+                        loading(false)
                     }
 
                 }
 
                 override fun onFailure(call: Call<SignInResponseModel>, t: Throwable) {
                     showToast(t.message.toString())
+                    loading(false)
                 }
 
             })
         }else{
             showToast("check your internet connection")
+            loading(false)
         }
-        loading(false)
+
     }
 
     private fun init(){
