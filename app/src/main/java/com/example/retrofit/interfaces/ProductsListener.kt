@@ -1,6 +1,5 @@
 package com.example.retrofit.interfaces
 
-import android.media.Image
 import android.widget.ImageView
 
 interface ProductsListener {

@@ -12,7 +12,6 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.retrofit.R
 import com.example.retrofit.apis.RetrofitFactory
-import com.example.retrofit.models.Data
 import com.example.retrofit.models.ProductModel
 import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call

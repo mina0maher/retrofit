@@ -18,7 +18,6 @@ import com.example.retrofit.models.SignInResponseModel
 import com.example.retrofit.models.UserModel
 import retrofit2.Call
 import retrofit2.Response
-import java.lang.Exception
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var buttonSignIn :Button
@@ -38,13 +37,8 @@ class SignInActivity : AppCompatActivity() {
     private fun setListeners(){
         buttonSignIn.setOnClickListener {
             if (isValidSignInDetails()){
-                try {
                     loading(true)
                     signIn()
-                }catch (e:Exception){
-                    showToast("try again")
-                }
-
             }
         }
     }

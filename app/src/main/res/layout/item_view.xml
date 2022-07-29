@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@color/black"
+            android:src="@color/gray1"
             android:layout_margin="@dimen/_6sdp"
             app:civ_border_color="@color/white"
             app:civ_border_width="@dimen/_3sdp"

@@ -2,7 +2,6 @@ package com.example.retrofit.ui
 
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
