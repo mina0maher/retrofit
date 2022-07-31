@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
@@ -12,11 +11,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.retrofit.R
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.models.SignInResponseModel
 import com.example.retrofit.models.UserModel
+import com.example.retrofit.utilities.Constants
+import com.example.retrofit.utilities.PreferenceManager
 import retrofit2.Call
 import retrofit2.Response
 
@@ -25,11 +27,17 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var inputEmail:EditText
     private lateinit var inputPassword:EditText
-    
+    private lateinit var preferenceManager: PreferenceManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        preferenceManager = PreferenceManager(applicationContext)
+        if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
+            val intent = Intent(this@SignInActivity, ProductsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+        }
         setContentView(R.layout.activity_sign_in)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         init()
         loading(false)
         setListeners()
@@ -74,7 +82,10 @@ class SignInActivity : AppCompatActivity() {
                 ) {
 
                     if (response.code() == 200) {
-                        startActivity(Intent(this@SignInActivity, ProductsActivity::class.java))
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
+                        val intent = Intent(this@SignInActivity, ProductsActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
                     } else if (response.code() == 422) {
                         showToast("email & password not correct")
                         loading(false)

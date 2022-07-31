@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.example.retrofit.R
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.models.ProductModel
+import com.example.retrofit.utilities.Constants
 import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call
 import retrofit2.Response
@@ -28,7 +29,7 @@ class ViewProductActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_product)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initViews()
         loading(true)
         getData()
@@ -37,7 +38,7 @@ class ViewProductActivity : AppCompatActivity() {
 
     private fun getData(){
         val retrofit = RetrofitFactory().apiInterface()
-        val call = retrofit.getProduct(intent.extras!!.getInt("POSITION"))
+        val call = retrofit.getProduct(intent.extras!!.getInt(Constants.KEY_PRODUCT_ID))
         if(isOnline(applicationContext)){
             call.enqueue(object : retrofit2.Callback<ProductModel>{
                 override fun onResponse(call: Call<ProductModel>, response: Response<ProductModel>) {

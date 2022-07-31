@@ -21,6 +21,7 @@ import com.example.retrofit.adapters.ProductsAdapter
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ProductsListener
 import com.example.retrofit.models.ProductsModel
+import com.example.retrofit.utilities.Constants
 import retrofit2.Call
 import retrofit2.Response
 
@@ -35,7 +36,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initView()
         loading(true)
         getData()
@@ -104,7 +105,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
     override fun onProductClicked(position: Int,productImage:ImageView) {
         if(isOnline(applicationContext)){
             val intent = Intent(this@ProductsActivity, ViewProductActivity::class.java)
-            intent.putExtra("POSITION",position)
+            intent.putExtra(Constants.KEY_PRODUCT_ID,position)
             val options :ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this@ProductsActivity,
                 productImage,
