@@ -35,6 +35,7 @@ class SignInActivity : AppCompatActivity() {
             val intent = Intent(this@SignInActivity, ProductsActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+            finish()
         }
         setContentView(R.layout.activity_sign_in)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
