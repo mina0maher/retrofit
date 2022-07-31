@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/drawable-v24/background_icon.xml" value="0.1" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/drawable-v24/background_input.xml" value="0.1" />
+        <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/drawable/ic_market_svgrepo_com.xml" value="0.1" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout-land/activity_view_product.xml" value="0.23236331569664903" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/activity_products.xml" value="0.1" />
+        <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/activity_products.xml" value="0.136" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/activity_sign_in.xml" value="0.10185185185185185" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/activity_view_product.xml" value="0.19882246376811594" />
         <entry key="..\:/Users/maher/AndroidStudioProjects/Retrofit/app/src/main/res/layout/item_view.xml" value="0.2" />

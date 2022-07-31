@@ -22,6 +22,7 @@ import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ProductsListener
 import com.example.retrofit.models.ProductsModel
 import com.example.retrofit.utilities.Constants
+import com.example.retrofit.utilities.PreferenceManager
 import retrofit2.Call
 import retrofit2.Response
 
@@ -33,13 +34,30 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
     private lateinit var productsLayout : ConstraintLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var data : ProductsModel
+    private lateinit var logoutImage:ImageView
+    private lateinit var preferenceManager: PreferenceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
+        preferenceManager = PreferenceManager(applicationContext)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initView()
+        setListeners()
         loading(true)
         getData()
+    }
+    private fun setListeners(){
+        logoutImage.setOnClickListener {
+            logout()
+        }
+    }
+    private fun logout(){
+        preferenceManager.clear()
+        val intent = Intent(this@ProductsActivity, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
     }
 
 
@@ -90,6 +108,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
         productsRecycler=findViewById(R.id.products_recycler)
         progressBar = findViewById(R.id.progress_bar)
         productsLayout = findViewById(R.id.products_layout)
+        logoutImage = findViewById(R.id.logout)
     }
 
     fun installRecycler(){

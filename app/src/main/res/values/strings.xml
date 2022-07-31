@@ -7,4 +7,5 @@
     <string name="sign_in">Sign In</string>
     <string name="create_new_account">Create New Account</string>
     <string name="market_icon">market icon</string>
+    <string name="logout_image">logout image</string>
 </resources>
