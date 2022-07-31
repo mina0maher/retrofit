@@ -18,16 +18,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofit.R
 import com.example.retrofit.adapters.ProductsAdapter
-import com.example.retrofit.apis.RetrofitFactory
+import com.example.retrofit.interfaces.ProductsActivityInterface
 import com.example.retrofit.interfaces.ProductsListener
 import com.example.retrofit.models.ProductsModel
+import com.example.retrofit.presenters.ProductsActivityPresenter
 import com.example.retrofit.utilities.Constants
 import com.example.retrofit.utilities.PreferenceManager
-import retrofit2.Call
-import retrofit2.Response
 
-
-class ProductsActivity : AppCompatActivity() ,ProductsListener {
+class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivityInterface{
     private lateinit var productsRecycler : RecyclerView
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var productsAdapter: ProductsAdapter
@@ -36,17 +34,20 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
     private lateinit var data : ProductsModel
     private lateinit var logoutImage:ImageView
     private lateinit var preferenceManager: PreferenceManager
-
+    private lateinit var productsActivityPresenter: ProductsActivityPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
         preferenceManager = PreferenceManager(applicationContext)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        productsActivityPresenter = ProductsActivityPresenter(this,this)
         initView()
         setListeners()
         loading(true)
-        getData()
+        productsActivityPresenter.getData()
     }
+
+
     private fun setListeners(){
         logoutImage.setOnClickListener {
             logout()
@@ -60,29 +61,6 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
         finish()
     }
 
-
-    private fun getData(){
-        val retrofit = RetrofitFactory().apiInterface()
-        val call = retrofit.getData()
-        if(isOnline(applicationContext)){
-            call.enqueue(object : retrofit2.Callback<ProductsModel>{
-                override fun onResponse(call: Call<ProductsModel>, response: Response<ProductsModel>) {
-                    data = response.body()!!
-                    installRecycler()
-                    loading(false)
-                }
-
-                override fun onFailure(call: Call<ProductsModel>, t: Throwable) {
-                    showToast(t.message.toString())
-                }
-
-            })
-        }else{
-            showToast("check internet connection")
-                Thread.sleep(10000)
-                getData()
-            }
-    }
     private fun loading(isLoading: Boolean) {
         if (isLoading) {
             productsLayout.visibility = View.GONE
@@ -111,14 +89,14 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
         logoutImage = findViewById(R.id.logout)
     }
 
-    fun installRecycler(){
+    private fun installRecycler(){
         layoutManager = GridLayoutManager(applicationContext,2)
         productsRecycler.layoutManager = layoutManager
         productsAdapter = ProductsAdapter(data.data,applicationContext,this)
         productsRecycler.adapter = productsAdapter
     }
     private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onProductClicked(position: Int,productImage:ImageView) {
@@ -134,6 +112,12 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener {
             }else{
                 showToast("check internet connection")
             }
+    }
+
+    override fun onGetData(productsModel: ProductsModel) {
+        data = productsModel
+        installRecycler()
+        loading(false)
     }
 
 
