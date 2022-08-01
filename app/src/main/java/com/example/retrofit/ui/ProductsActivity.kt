@@ -31,7 +31,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     private lateinit var productsAdapter: ProductsAdapter
     private lateinit var productsLayout : ConstraintLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var data : ProductsModel
+    private  var data : ProductsModel?=null
     private lateinit var logoutImage:ImageView
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var productsActivityPresenter: ProductsActivityPresenter
@@ -44,7 +44,10 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         initView()
         setListeners()
         loading(true)
-        productsActivityPresenter.getData()
+
+        Thread { productsActivityPresenter.getData() }.start()
+
+
     }
 
 
@@ -92,7 +95,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     private fun installRecycler(){
         layoutManager = GridLayoutManager(applicationContext,2)
         productsRecycler.layoutManager = layoutManager
-        productsAdapter = ProductsAdapter(data.data,applicationContext,this)
+        productsAdapter = ProductsAdapter(data!!.data,applicationContext,this)
         productsRecycler.adapter = productsAdapter
     }
     private fun showToast(message: String) {
@@ -118,6 +121,10 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         data = productsModel
         installRecycler()
         loading(false)
+    }
+
+    override fun checkInternet() {
+        this@ProductsActivity.runOnUiThread { showToast("check internet connection") }
     }
 
 

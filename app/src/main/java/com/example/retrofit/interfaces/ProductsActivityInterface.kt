@@ -4,4 +4,5 @@ import com.example.retrofit.models.ProductsModel
 
 interface ProductsActivityInterface {
     fun onGetData(productsModel: ProductsModel)
+    fun checkInternet()
 }

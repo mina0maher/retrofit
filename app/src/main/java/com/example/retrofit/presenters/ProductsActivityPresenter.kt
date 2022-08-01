@@ -24,14 +24,13 @@ class ProductsActivityPresenter (val context: Context,val productsActivityInterf
 
                 override fun onFailure(call: Call<ProductsModel>, t: Throwable) {
                     showToast(t.message.toString())
-                    Thread.sleep(1000)
                     getData()
                 }
 
             })
         }else{
-            showToast("check internet connection")
-            Thread.sleep(10000)
+            Thread.sleep(5000)
+            productsActivityInterface.checkInternet()
             getData()
         }
     }
