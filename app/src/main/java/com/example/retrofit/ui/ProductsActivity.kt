@@ -33,37 +33,31 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     private lateinit var progressBar: ProgressBar
     private  var data : ProductsModel?=null
     private lateinit var logoutImage:ImageView
-    private lateinit var preferenceManager: PreferenceManager
     private lateinit var productsActivityPresenter: ProductsActivityPresenter
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
-        preferenceManager = PreferenceManager(applicationContext)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        productsActivityPresenter = ProductsActivityPresenter(this,this)
+        initObjects()
+        nightMode()
         initView()
         setListeners()
         loading(true)
-
         Thread { productsActivityPresenter.getData() }.start()
-
-
     }
 
-
+    private fun initObjects(){
+        productsActivityPresenter = ProductsActivityPresenter(applicationContext,this@ProductsActivity)
+    }
+    private fun nightMode(){
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    }
     private fun setListeners(){
         logoutImage.setOnClickListener {
-            logout()
+            productsActivityPresenter.logout()
         }
     }
-    private fun logout(){
-        preferenceManager.clear()
-        val intent = Intent(this@ProductsActivity, SignInActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
-        finish()
-    }
-
     private fun loading(isLoading: Boolean) {
         if (isLoading) {
             productsLayout.visibility = View.GONE
@@ -73,8 +67,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
             productsLayout.visibility = View.VISIBLE
         }
     }
-
-     private fun isOnline(context: Context): Boolean {
+    private fun isOnline(context: Context): Boolean {
              val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
              val n = cm.activeNetwork
@@ -91,7 +84,6 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         productsLayout = findViewById(R.id.products_layout)
         logoutImage = findViewById(R.id.logout)
     }
-
     private fun installRecycler(){
         layoutManager = GridLayoutManager(applicationContext,2)
         productsRecycler.layoutManager = layoutManager
@@ -113,19 +105,21 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
             )
             startActivity(intent,options.toBundle())
             }else{
-                showToast("check internet connection")
+                showToast("check internet connection and try again")
             }
     }
-
     override fun onGetData(productsModel: ProductsModel) {
         data = productsModel
         installRecycler()
         loading(false)
     }
-
     override fun checkInternet() {
         this@ProductsActivity.runOnUiThread { showToast("check internet connection") }
     }
-
-
+    override fun onLogoutClicked() {
+        val intent = Intent(this@ProductsActivity, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+    }
 }

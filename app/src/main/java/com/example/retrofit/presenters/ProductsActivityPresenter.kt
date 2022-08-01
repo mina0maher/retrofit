@@ -1,12 +1,15 @@
 package com.example.retrofit.presenters
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ProductsActivityInterface
 import com.example.retrofit.models.ProductsModel
+import com.example.retrofit.ui.SignInActivity
+import com.example.retrofit.utilities.PreferenceManager
 import retrofit2.Call
 import retrofit2.Response
 
@@ -33,6 +36,11 @@ class ProductsActivityPresenter (val context: Context,val productsActivityInterf
             productsActivityInterface.checkInternet()
             getData()
         }
+    }
+    fun logout(){
+        val preferenceManager = PreferenceManager(context)
+        preferenceManager.clear()
+        productsActivityInterface.onLogoutClicked()
     }
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
