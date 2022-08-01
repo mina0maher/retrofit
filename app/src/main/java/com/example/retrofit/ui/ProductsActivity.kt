@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
@@ -23,7 +23,6 @@ import com.example.retrofit.interfaces.ProductsListener
 import com.example.retrofit.models.ProductsModel
 import com.example.retrofit.presenters.ProductsActivityPresenter
 import com.example.retrofit.utilities.Constants
-import com.example.retrofit.utilities.PreferenceManager
 
 class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivityInterface{
     private lateinit var productsRecycler : RecyclerView
@@ -31,11 +30,10 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     private lateinit var productsAdapter: ProductsAdapter
     private lateinit var productsLayout : ConstraintLayout
     private lateinit var progressBar: ProgressBar
-    private  var data : ProductsModel?=null
+    private lateinit var data : ProductsModel
     private lateinit var logoutImage:ImageView
     private lateinit var productsActivityPresenter: ProductsActivityPresenter
-
-
+    private var canStart:Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
@@ -45,6 +43,11 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         setListeners()
         loading(true)
         Thread { productsActivityPresenter.getData() }.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        canStart = true
     }
 
     private fun initObjects(){
@@ -87,7 +90,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     private fun installRecycler(){
         layoutManager = GridLayoutManager(applicationContext,2)
         productsRecycler.layoutManager = layoutManager
-        productsAdapter = ProductsAdapter(data!!.data,applicationContext,this)
+        productsAdapter = ProductsAdapter(data.data,applicationContext,this)
         productsRecycler.adapter = productsAdapter
     }
     private fun showToast(message: String) {
@@ -95,7 +98,9 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
     }
 
     override fun onProductClicked(position: Int,productImage:ImageView) {
-        if(isOnline(applicationContext)){
+        val isOnline:Boolean=isOnline(applicationContext)
+        if(isOnline&&canStart){
+
             val intent = Intent(this@ProductsActivity, ViewProductActivity::class.java)
             intent.putExtra(Constants.KEY_PRODUCT_ID,position)
             val options :ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -104,7 +109,8 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
                 ViewCompat.getTransitionName(productImage)!!
             )
             startActivity(intent,options.toBundle())
-            }else{
+            canStart = false
+            }else if (!isOnline){
                 showToast("check internet connection and try again")
             }
     }
