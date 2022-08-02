@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -94,9 +93,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         productsAdapter = ProductsAdapter(data.data,applicationContext,this)
         productsRecycler.adapter = productsAdapter
     }
-    private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-    }
+
 
     override fun onProductClicked(position: Int,productImage:ImageView) {
         val isOnline:Boolean=isOnline(applicationContext)
@@ -112,7 +109,21 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
             startActivity(intent,options.toBundle())
             canStart = false
             }else if (!isOnline){
-                showToast("check internet connection and try again")
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Error")
+                builder.setMessage("please check your internet connection")
+                builder.setCancelable(true)
+                builder.setIcon(R.drawable.ic_no_internet)
+                builder.setPositiveButton("cancel") { _, _ ->
+                    return@setPositiveButton
+                }
+
+                builder.setNegativeButton("exit") { _, _ ->
+                    finish()
+                }
+
+
+                builder.show()
             }
     }
     override fun onGetData(productsModel: ProductsModel) {

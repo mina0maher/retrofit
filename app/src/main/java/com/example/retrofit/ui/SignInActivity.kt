@@ -111,7 +111,7 @@ class SignInActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Error")
             builder.setMessage("check your internet connection and try again")
-            builder.setCancelable(false)
+            builder.setCancelable(true)
             builder.setIcon(R.drawable.ic_no_internet)
             builder.setPositiveButton("reload") { _, _ ->
                 signIn()
