@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.retrofit.R
@@ -48,7 +49,6 @@ class SignInActivity : AppCompatActivity() {
     private fun setListeners(){
         buttonSignIn.setOnClickListener {
             if (isValidSignInDetails()){
-                    loading(true)
                     signIn()
             }
         }
@@ -73,6 +73,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
     private fun signIn(){
+        loading(true)
         if(isOnline(applicationContext)){
             val retrofit = RetrofitFactory().apiInterface()
             val call = retrofit.logIn(UserModel(inputEmail.text.toString(),inputPassword.text.toString()))
@@ -107,7 +108,21 @@ class SignInActivity : AppCompatActivity() {
 
             })
         }else{
-            showToast("check your internet connection")
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Error")
+            builder.setMessage("check your internet connection and try again")
+            builder.setCancelable(false)
+            builder.setIcon(R.drawable.ic_no_internet)
+            builder.setPositiveButton("reload") { _, _ ->
+                signIn()
+            }
+
+            builder.setNegativeButton("exit") { _, _ ->
+                finish()
+            }
+
+
+            builder.show()
             loading(false)
         }
 
