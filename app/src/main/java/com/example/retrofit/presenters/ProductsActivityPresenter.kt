@@ -1,14 +1,12 @@
 package com.example.retrofit.presenters
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ProductsActivityInterface
 import com.example.retrofit.models.ProductsModel
-import com.example.retrofit.ui.SignInActivity
 import com.example.retrofit.utilities.PreferenceManager
 import retrofit2.Call
 import retrofit2.Response
@@ -26,14 +24,14 @@ class ProductsActivityPresenter (val context: Context,val productsActivityInterf
                 }
 
                 override fun onFailure(call: Call<ProductsModel>, t: Throwable) {
-                    showToast(t.message.toString())
+                    productsActivityInterface.pushToast(t.message.toString())
                     getData()
                 }
 
             })
         }else{
             Thread.sleep(5000)
-            productsActivityInterface.checkInternet()
+            productsActivityInterface.pushToast("check internet connection and try again")
             getData()
         }
     }
@@ -41,9 +39,6 @@ class ProductsActivityPresenter (val context: Context,val productsActivityInterf
         val preferenceManager = PreferenceManager(context)
         preferenceManager.clear()
         productsActivityInterface.onLogoutClicked()
-    }
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
     private fun isOnline(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

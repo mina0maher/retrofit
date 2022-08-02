@@ -119,8 +119,9 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         installRecycler()
         loading(false)
     }
-    override fun checkInternet() {
-        this@ProductsActivity.runOnUiThread { showToast("check internet connection") }
+
+    override fun pushToast(string: String) {
+        this@ProductsActivity.runOnUiThread { showToast(string) }
     }
     override fun onLogoutClicked() {
         val intent = Intent(this@ProductsActivity, SignInActivity::class.java)

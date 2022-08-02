@@ -4,6 +4,7 @@ import com.example.retrofit.models.ProductsModel
 
 interface ProductsActivityInterface {
     fun onGetData(productsModel: ProductsModel)
-    fun checkInternet()
+    fun pushToast(string: String)
     fun onLogoutClicked()
+
 }
