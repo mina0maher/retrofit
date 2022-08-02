@@ -3,7 +3,6 @@ package com.example.retrofit.presenters
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.widget.Toast
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ProductsActivityInterface
 import com.example.retrofit.models.ProductsModel
@@ -24,15 +23,14 @@ class ProductsActivityPresenter (val context: Context,val productsActivityInterf
                 }
 
                 override fun onFailure(call: Call<ProductsModel>, t: Throwable) {
-                    productsActivityInterface.pushToast(t.message.toString())
-                    getData()
+                    productsActivityInterface.pushDialog(t.message.toString())
                 }
 
             })
         }else{
-            Thread.sleep(5000)
-            productsActivityInterface.pushToast("check internet connection and try again")
-            getData()
+
+            productsActivityInterface.pushDialog("no internet connection do you want try again ?")
+
         }
     }
     fun logout(){

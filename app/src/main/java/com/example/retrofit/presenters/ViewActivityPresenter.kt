@@ -3,13 +3,9 @@ package com.example.retrofit.presenters
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.view.View
-import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.interfaces.ViewActivityInterface
 import com.example.retrofit.models.ProductModel
-import com.example.retrofit.utilities.Constants
 import retrofit2.Call
 import retrofit2.Response
 
@@ -27,15 +23,12 @@ class ViewActivityPresenter (val context: Context,val viewActivityInterface: Vie
                 }
 
                 override fun onFailure(call: Call<ProductModel>, t: Throwable) {
-                    viewActivityInterface.pushToast(t.message.toString())
-                    getData(productId)
+                    viewActivityInterface.pushDialog(t.message.toString())
                 }
 
             })
         }else{
-            Thread.sleep(5000)
-            viewActivityInterface.pushToast("check internet connection and try again")
-            getData(productId)
+            viewActivityInterface.pushDialog("no internet connection do you want try again ?")
         }
     }
 

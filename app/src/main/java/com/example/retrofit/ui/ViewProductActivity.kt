@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.retrofit.R
@@ -25,6 +26,7 @@ class ViewProductActivity : AppCompatActivity() ,ViewActivityInterface {
     private lateinit var nameProgressBar: ProgressBar
     private lateinit var priceProgressBar: ProgressBar
     private lateinit var viewActivityPresenter: ViewActivityPresenter
+    private var productId:Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_product)
@@ -32,10 +34,11 @@ class ViewProductActivity : AppCompatActivity() ,ViewActivityInterface {
         initObjects()
         initViews()
         loading(true)
-        Thread{viewActivityPresenter.getData(intent.extras!!.getInt(Constants.KEY_PRODUCT_ID))}.start()
+        Thread{viewActivityPresenter.getData(productId)}.start()
     }
     private fun initObjects(){
         viewActivityPresenter = ViewActivityPresenter(applicationContext,this@ViewProductActivity)
+        productId = intent.extras!!.getInt(Constants.KEY_PRODUCT_ID)
     }
 
 
@@ -62,9 +65,7 @@ class ViewProductActivity : AppCompatActivity() ,ViewActivityInterface {
         nameProgressBar=findViewById(R.id.name_progress_bar)
         priceProgressBar=findViewById(R.id.price_progress_bar)
     }
-    private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
-    }
+
 
     override fun onGetProductModel(productModel: ProductModel) {
         productName.text = productModel.data.name
@@ -74,8 +75,26 @@ class ViewProductActivity : AppCompatActivity() ,ViewActivityInterface {
         loading(false)
     }
 
-    override fun pushToast(text: String) {
-        this@ViewProductActivity.runOnUiThread { showToast(text) }
+    override fun pushDialog(text: String) {
+        this@ViewProductActivity.runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Error")
+            builder.setMessage(text)
+            builder.setCancelable(false)
+            builder.setIcon(R.drawable.ic_no_internet)
+            builder.setPositiveButton("reload") { _, _ ->
+                viewActivityPresenter.getData(productId)
+            }
+
+            builder.setNegativeButton("exit") { _, _ ->
+                finish()
+            }
+
+
+            builder.show()
+        }
     }
+
+
 
 }

@@ -4,7 +4,6 @@ import com.example.retrofit.models.ProductsModel
 
 interface ProductsActivityInterface {
     fun onGetData(productsModel: ProductsModel)
-    fun pushToast(string: String)
     fun onLogoutClicked()
-
+    fun pushDialog(text:String)
 }

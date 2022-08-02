@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -71,7 +72,7 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
         }
     }
     private fun isOnline(context: Context): Boolean {
-             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
              val n = cm.activeNetwork
              if (n != null) {
@@ -115,18 +116,37 @@ class ProductsActivity : AppCompatActivity() ,ProductsListener ,ProductsActivity
             }
     }
     override fun onGetData(productsModel: ProductsModel) {
+
         data = productsModel
         installRecycler()
         loading(false)
     }
 
-    override fun pushToast(string: String) {
-        this@ProductsActivity.runOnUiThread { showToast(string) }
-    }
     override fun onLogoutClicked() {
         val intent = Intent(this@ProductsActivity, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
     }
+
+    override fun pushDialog(text:String) {
+        this@ProductsActivity.runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Error")
+            builder.setMessage(text)
+            builder.setCancelable(false)
+            builder.setIcon(R.drawable.ic_no_internet)
+            builder.setPositiveButton("reload") { _, _ ->
+                productsActivityPresenter.getData()
+            }
+
+            builder.setNegativeButton("exit") { _, _ ->
+                finish()
+            }
+
+
+            builder.show()
+        }
+    }
+
 }
