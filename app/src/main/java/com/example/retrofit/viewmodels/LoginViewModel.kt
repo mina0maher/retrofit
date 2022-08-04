@@ -2,7 +2,6 @@ package com.example.retrofit.viewmodels
 
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.retrofit.apis.RetrofitFactory
 import com.example.retrofit.models.SignInResponseModel
@@ -11,15 +10,15 @@ import retrofit2.Call
 import retrofit2.Response
 
 class LoginViewModel : ViewModel() {
-     var codesMD: MutableLiveData<Int> = MutableLiveData()
+     var codesMD: SingleLiveEvent<Int> = SingleLiveEvent()
      val codesLiveData:LiveData<Int>
           get() = codesMD
 
-    var bodyMD: MutableLiveData<SignInResponseModel> = MutableLiveData()
+    var bodyMD: SingleLiveEvent<SignInResponseModel> = SingleLiveEvent()
     val bodyLiveData:LiveData<SignInResponseModel>
         get() = bodyMD
 
-    var errorMessageMD: MutableLiveData<String> = MutableLiveData()
+    var errorMessageMD: SingleLiveEvent<String> = SingleLiveEvent()
     val errorMessageLiveData:LiveData<String>
         get() = errorMessageMD
 

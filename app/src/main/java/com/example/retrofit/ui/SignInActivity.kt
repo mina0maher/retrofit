@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
 import com.example.retrofit.R
 import com.example.retrofit.models.UserModel
 import com.example.retrofit.utilities.Constants
@@ -79,7 +80,6 @@ class SignInActivity : AppCompatActivity() {
         if(isOnline(applicationContext)){
 
             loginViewModel.signIn(UserModel(inputEmail.text.toString(),inputPassword.text.toString()))
-
             loginViewModel.codesLiveData.observe(this) {
                 when (it) {
                     200 -> {
@@ -106,6 +106,7 @@ class SignInActivity : AppCompatActivity() {
             loginViewModel.errorMessageLiveData.observe(this) {
                        showToast(it,applicationContext)
                        loading(false)
+
                    }
 
 
