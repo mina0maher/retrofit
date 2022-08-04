@@ -10,18 +10,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.retrofit.R
-import com.example.retrofit.apis.RetrofitFactory
-import com.example.retrofit.models.SignInResponseModel
 import com.example.retrofit.models.UserModel
 import com.example.retrofit.utilities.Constants
+import com.example.retrofit.utilities.Constants.showToast
 import com.example.retrofit.utilities.PreferenceManager
-import retrofit2.Call
-import retrofit2.Response
+import com.example.retrofit.viewmodels.LoginViewModel
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var buttonSignIn :Button
@@ -29,6 +27,9 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var inputEmail:EditText
     private lateinit var inputPassword:EditText
     private lateinit var preferenceManager: PreferenceManager
+    private val loginViewModel:LoginViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferenceManager = PreferenceManager(applicationContext)
@@ -43,6 +44,7 @@ class SignInActivity : AppCompatActivity() {
         init()
         loading(false)
         setListeners()
+
     }
 
 
@@ -75,38 +77,38 @@ class SignInActivity : AppCompatActivity() {
     private fun signIn(){
         loading(true)
         if(isOnline(applicationContext)){
-            val retrofit = RetrofitFactory().apiInterface()
-            val call = retrofit.logIn(UserModel(inputEmail.text.toString(),inputPassword.text.toString()))
-            call.enqueue(object :retrofit2.Callback<SignInResponseModel>{
-                override fun onResponse(
-                    call: Call<SignInResponseModel>,
-                    response: Response<SignInResponseModel>
-                ) {
 
-                    if (response.code() == 200) {
+            loginViewModel.signIn(UserModel(inputEmail.text.toString(),inputPassword.text.toString()))
+
+            loginViewModel.codesLiveData.observe(this) {
+                when (it) {
+                    200 -> {
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
                         val intent = Intent(this@SignInActivity, ProductsActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
-                    } else if (response.code() == 422) {
-                        showToast("email & password not correct")
-                        loading(false)
-                    }else if(response.code()==401){
-                        showToast("password not correct")
-                        loading(false)
-                    }else{
-                        showToast("error ${response.code()}")
+                        finish()
+                    }
+                    422 -> {
+                        showToast("email & password not correct",applicationContext)
                         loading(false)
                     }
-
+                    401 -> {
+                        showToast("password not correct",applicationContext)
+                        loading(false)
+                    }
+                    else -> {
+                        showToast("error $it",applicationContext)
+                        loading(false)
+                    }
                 }
+            }
+            loginViewModel.errorMessageLiveData.observe(this) {
+                       showToast(it,applicationContext)
+                       loading(false)
+                   }
 
-                override fun onFailure(call: Call<SignInResponseModel>, t: Throwable) {
-                    showToast(t.message.toString())
-                    loading(false)
-                }
 
-            })
         }else{
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Error")
@@ -128,6 +130,13 @@ class SignInActivity : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        loginViewModel.codesLiveData.removeObservers(this)
+        loginViewModel.errorMessageLiveData.removeObservers(this)
+    }
+
+
     private fun init(){
         buttonSignIn = findViewById(R.id.buttonSignIn)
         progressBar = findViewById(R.id.progressBar)
@@ -145,22 +154,20 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
-    }
+
 
     private fun isValidSignInDetails():Boolean
     {
         return if (inputEmail.text.toString().trim().isEmpty()) {
-            showToast("Enter email")
+            showToast("Enter email",applicationContext)
             false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(inputEmail.text.toString())
                 .matches()
         ) {
-            showToast("Enter valid email")
+            showToast("Enter valid email",applicationContext)
             false
         } else if (inputPassword.text.toString().trim().isEmpty()) {
-            showToast("Enter password")
+            showToast("Enter password",applicationContext)
             false
         } else {
             true
